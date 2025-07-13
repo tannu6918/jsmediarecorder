@@ -3,11 +3,16 @@ This project allows users to record a video using their browser, upload it to th
 
 # Project Structure
 
-├── node_modules
-├── public/            # Frontend files (HTML/JS/CSS) <br>
+├── node_modules  
+
+├── public/            # Frontend files (HTML/JS/CSS) 
+
 ├── uploads/           # Temporary upload storage 
+
 ├── server.js          # Main server code
+
 ├── package.json
+
 └── .env               # Environment variables
 
 # Features
@@ -33,3 +38,7 @@ Email Service: Nodemailer
 
 Templating: HTML5 + Vanilla JS
 
+
+# Setup Instructions
+
+## Clone the repo
