@@ -41,4 +41,52 @@ Templating: HTML5 + Vanilla JS
 
 # Setup Instructions
 
-## Clone the repo
+##  1 Clone the repo
+
+https://github.com/tannu6918/jsmediarecorder.git
+
+cd jsmediarecorder
+
+## 2 Install dependencies
+
+npm install
+
+## 3 Setup .env file
+
+### Create a .env file and add your email credentials:
+
+EMAIL_USER=your-email@gmail.com
+
+EMAIL_PASS=your-app-password
+
+ ##  4 Run the server
+
+ node server.js
+
+ ## 5 Open the app
+ 
+Visit: http://localhost:3000
+
+
+#  Email Sending
+
+When a video is uploaded, it is sent as an email attachment and then deleted from the server to save space.
+
+# 📸 Frontend UI
+
+Uses the browser's MediaRecorder API.
+
+Records and sends video with a single click.
+
+ # 📌 TODO / Improvements
+Add file size validation
+
+Support multiple recipients
+
+Add email subject/body customization
+
+Add success/failure frontend alert messages
+
+ # 🤝 Contributing
+ 
+Feel free to fork this repository and submit pull requests. Suggestions and improvements are welcome!
