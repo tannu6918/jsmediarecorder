@@ -4,8 +4,8 @@ This project allows users to record a video using their browser, upload it to th
 # Project Structure
 
 ├── node_modules
-├── public/            # Frontend files (HTML/JS/CSS)
-├── uploads/           # Temporary upload storage
+├── public/            # Frontend files (HTML/JS/CSS) </br>
+├── uploads/           # Temporary upload storage 
 ├── server.js          # Main server code
 ├── package.json
 └── .env               # Environment variables
