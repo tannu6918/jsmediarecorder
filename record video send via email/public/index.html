@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Record & Send Video</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    video { border: 1px solid #ccc; margin-bottom: 8px; }
+    button { margin-right: 6px; }
+    input { margin: 4px 0; width: 220px; }
+  </style>
+</head>
+<body>
+  <h2>🎥 Record Video & Send by Email</h2>
+
+  <!-- live webcam preview -->
+  <video id="preview" width="320" height="240" autoplay playsinline></video><br>
+
+  <!-- recorded clip playback (hidden until we have something) -->
+  <video id="playback" width="320" height="240" controls style="display:none;"></video><br>
+
+  <button id="startBtn">⏺️ Start</button>
+  <button id="stopBtn"  disabled>⏹️ Stop</button>
+  <button id="sendBtn"  disabled>📤 Send Email</button><br><br>
+
+  <input id="name"  type="text"  placeholder="Your name"          required><br>
+  <input id="email" type="email" placeholder="Recipient e‑mail"   required><br>
+
+  <script>
+    const preview  = document.getElementById('preview');
+    const playback = document.getElementById('playback');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn  = document.getElementById('stopBtn');
+    const sendBtn  = document.getElementById('sendBtn');
+    let mediaRecorder, chunks = [];
+
+    // 1️⃣  Get webcam stream
+    navigator.mediaDevices.getUserMedia({ video:true, audio:true })
+      .then(stream => {
+        preview.srcObject = stream;
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data.size) chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type:'video/webm' });
+          playback.src = URL.createObjectURL(blob);
+          playback.style.display = 'block';
+          sendBtn.dataset.blobUrl = playback.src; // stash for later send
+          sendBtn.disabled = false;
+        };
+      })
+      .catch(err => alert('Camera/mic error: ' + err));
+
+    // 2️⃣  Buttons
+    startBtn.onclick = () => {
+      chunks = [];
+      mediaRecorder.start();
+      startBtn.disabled = true;
+      stopBtn.disabled  = false;
+      sendBtn.disabled  = true;
+      playback.style.display = 'none';
+    };
+
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+      startBtn.disabled = false;
+      stopBtn.disabled  = true;
+    };
+
+    // 3️⃣  Manual SEND
+    sendBtn.onclick = () => {
+      const blobUrl = sendBtn.dataset.blobUrl;
+      fetch(blobUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const fd = new FormData();
+          fd.append('video', blob, 'recorded.webm');
+          fd.append('name',  document.getElementById('name').value);
+          fd.append('email', document.getElementById('email').value);
+
+          sendBtn.textContent = 'Uploading…';
+          sendBtn.disabled = true;
+
+          return fetch('/upload', { method:'POST', body:fd });
+        })
+        .then(r => r.text())
+        .then(msg => alert(msg))
+        .catch(err => alert('Upload error: ' + err))
+        .finally(() => {
+          sendBtn.textContent = '📤 Send Email';
+          sendBtn.disabled = false;
+        });
+    };
+  </script>
+</body>
+</html>
